@@ -1,0 +1,1037 @@
+function varargout = imageP(varargin)
+% ABOUTIMAGEP MATLAB code for aboutImageP.fig
+%      ABOUTIMAGEP, by itself, creates a new ABOUTIMAGEP or raises the existing
+%      singleton*.
+%
+%      H = ABOUTIMAGEP returns the handle to a new ABOUTIMAGEP or the handle to
+%      the existing singleton*.
+%
+%      ABOUTIMAGEP('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in ABOUTIMAGEP.M with the given input arguments.
+%
+%      ABOUTIMAGEP('Property','Value',...) creates a new ABOUTIMAGEP or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before imageP_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to imageP_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help aboutImageP
+
+% Last Modified by GUIDE v2.5 23-Dec-2018 20:46:05
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @imageP_OpeningFcn, ...
+                   'gui_OutputFcn',  @imageP_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before aboutImageP is made visible.
+function imageP_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to aboutImageP (see VARARGIN)
+
+% Choose default command line output for aboutImageP
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes aboutImageP wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = imageP_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in Open.
+function Open_Callback(hObject, eventdata, handles)
+% hObject    handle to Open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im im2;
+[impath, user_canceled] = imgetfile;
+if user_canceled
+    msgbox(sprintf('Cancelled by user!\nOperation could not be completed'),'error','error');
+    return;
+end
+im=imread(impath);
+im2=im;
+axes(handles.axes1);
+imshow(im);
+axes(handles.axes2);
+imshow(im);
+
+
+
+
+
+% --- Executes on button press in Save.
+function Save_Callback(hObject, eventdata, handles)
+% hObject    handle to Save (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% global im
+% yourImageArray = im;
+% startingFolder = userpath;
+% defaultFileName = fullfile(startingFolder, '*.*');
+% [baseFileName, folder] = uiputfile(defaultFileName, 'Specify a file');
+% if baseFileName == 0
+%   % User clicked the Cancel button.
+%   return;
+% end
+% fullFileName = fullfile(folder, baseFileName)
+% imwrite(yourImageArray, fullFileName);
+% toBeSaved= im;
+% assignin('base','toBeSaved',toBeSaved);
+[fileName, filePath]=uiputfile('*.jpg', 'Save Edited Image as');
+f=getframe(handles.axes2);
+[x,map]=frame2im(f); 
+fileName = fullfile(filePath, fileName);
+imwrite(x, fileName, 'jpg');
+guidata(hObject, handles);
+
+% --- Executes on button press in Share.
+function Share_Callback(hObject, eventdata, handles)
+% hObject    handle to Share (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on slider movement.
+function rotation_Callback(hObject, eventdata, handles)
+% hObject    handle to rotation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im2
+% arr = [10 15 45 90]
+% set(handles.rotation, 'value');
+v1 = get(handles.rotation,'value');
+k1 = imrotate(im2,v1);
+imshow(k1);
+
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function rotation_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rotation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function resize_Callback(hObject, eventdata, handles)
+% hObject    handle to resize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+v2 = get(handles.resize,'value');
+k2 = imresize(im,v2);
+imshow(k2);
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function resize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to resize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function Brightnes_Callback(hObject, eventdata, handles)
+% hObject    handle to Brightnes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+val=0.5*(get(hObject,'Value')-0.5);
+global im
+brt=im;
+new=brightness(brt,val);
+imshow(new);
+
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+% --- Executes during object creation, after setting all properties.
+function Brightnes_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Brightnes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in reset.
+function reset_Callback(hObject, eventdata, handles)
+% hObject    handle to reset (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im2
+axes(handles.axes2);
+imshow(im2);
+
+
+
+function [ brt ] = brightness( im,val )
+%BRIGHTNESS Summary of this function goes here
+%   Detailed explanation goes here
+[a b c]=size(im);
+for i=1:a
+    for j=1:b
+        for k=1:3
+        im(i,j,k)=im(i,j,k)+val;
+            if im(i,j,k)>255
+            im(i,j,k)=255;
+            elseif im(i,j,k)<0
+            im(i,j,k)=0;
+            end
+        end
+    end
+end
+
+brt=im;
+%imshow(brt);
+
+
+% --- Executes on button press in grayscale.
+function grayscale_Callback(hObject, eventdata, handles)
+% hObject    handle to grayscale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imgray = im;
+i=rgb2gray(imgray);
+axes(handles.axes2);
+imshow(i);
+
+
+
+
+
+% --- Executes on button press in negatives.
+function negatives_Callback(hObject, eventdata, handles)
+% hObject    handle to negatives (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im 
+image=im;
+image = 255 - image;
+axes(handles.axes2);
+imshow(image);
+
+
+
+% --- Executes on button press in laplacian.
+function laplacian_Callback(hObject, eventdata, handles)
+% hObject    handle to laplacian (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+lap = im;
+H = fspecial('laplacian',0.6);
+lapFilter = imfilter(lap,H,'replicate');
+axes(handles.axes2);
+imshow(lapFilter);
+
+
+
+
+% --- Executes on button press in sobel.
+function sobel_Callback(hObject, eventdata, handles)
+% hObject    handle to sobel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+lap = im;
+H = fspecial('sobel');
+lapFilter = imfilter(lap,H,'replicate');
+axes(handles.axes2);
+imshow(lapFilter);
+
+% --- Executes on button press in unsharp.
+function unsharp_Callback(hObject, eventdata, handles)
+% hObject    handle to unsharp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+unsh = im;
+% H = fspecial('unsharp',0.6);
+unshFilter = imsharpen(unsh);
+axes(handles.axes2);
+imshow(unshFilter);
+
+
+% --- Executes on button press in gaussian.
+function gaussian_Callback(hObject, eventdata, handles)
+% hObject    handle to gaussian (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+gauss = im;
+H = imgaussfilt(gauss, 2);
+% gaussFilter = imfilter(gauss,H,'replicate');
+axes(handles.axes2);
+imshow(H);
+
+% --- Executes on button press in averaging.
+function averaging_Callback(hObject, eventdata, handles)
+% hObject    handle to averaging (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+avg = im;
+H = fspecial('average');
+avgFilter = imfilter(avg,H,'replicate');
+axes(handles.axes2);
+imshow(avgFilter);
+
+
+% --- Executes on button press in log_edge.
+function log_Callback(hObject, eventdata, handles)
+% hObject    handle to log_edge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+log = im;
+H = fspecial('log');
+logFilter = imfilter(log,H,'replicate');
+axes(handles.axes2);
+imshow(logFilter);
+
+
+% --- Executes on button press in HistogramImage.
+function HistogramImage_Callback(hObject, eventdata, handles)
+% hObject    handle to HistogramImage (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+
+histImage = im;
+imageGray = rgb2gray(histImage);
+histI = imhist(imageGray);
+figure(3);
+subplot(2,1,1);
+% axes(handles.axes2);
+imshow(histI);
+
+% --- Executes on button press in gaussianlowpass.
+function gaussianlowpass_Callback(hObject, eventdata, handles)
+% hObject    handle to gaussianlowpass (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% An image is first converted into grey scale from RGB. Then using a Gaussian filter, low pass and high pass filtered image is synthesized and visualized. High pass response is just the complementary of low pass response as shown in the screenshot. MATLAB inbuilt fft function is used for spectral extraction.
+
+
+global im
+imgau = rgb2gray(im);
+[filbut, F] = fftfilter(imgau, 1);
+axes(handles.axes2),imshow(filbut,[]);
+
+figure,imshow(log(1+abs(fftshift(F))), []),title('GaussianLowPass Fourier Spectrum');
+colormap copper;
+
+
+% --- Executes on button press in gaussianhighpass.
+function gaussianhighpass_Callback(hObject, eventdata, handles)
+% hObject    handle to gaussianhighpass (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imgau1 = rgb2gray(im);
+[filbut,F]=fftfilter(imgau1,2);
+axes(handles.axes2),imshow(filbut,[]);
+figure,imshow(log(1+abs(fftshift(F))),[]),title('GaussianHighPass Fourier Spectrum');
+colormap copper;
+
+% --- Executes on button press in butterworthlowpass.
+function butterworthlowpass_Callback(hObject, eventdata, handles)
+% hObject    handle to butterworthlowpass (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imbw = rgb2gray(im);
+[filbut, F] = fftfilter(imbw, 3);
+axes(handles.axes2),imshow(filbut,[]);
+
+figure,imshow(log(1+abs(fftshift(F))), []),title('ButterWorthLowPass Fourier Spectrum');
+colormap copper;
+
+
+% --- Executes on button press in butterworthhighpass.
+function butterworthhighpass_Callback(hObject, eventdata, handles)
+% hObject    handle to butterworthhighpass (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imbw = rgb2gray(im);
+[filbut, F] = fftfilter(imbw, 4);
+axes(handles.axes2),imshow(filbut,[]);
+
+figure,imshow(log(1+abs(fftshift(F))), []),title('ButterHighLowPass Fourier Spectrum');
+colormap copper;
+
+
+% --- Executes on button press in help.
+function help_Callback(hObject, eventdata, handles)
+% hObject    handle to help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in togglebutton1.
+function togglebutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to togglebutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of togglebutton1
+
+
+% --- Executes on button press in grayScaleToBin.
+function grayScaleToBin_Callback(hObject, eventdata, handles)
+% hObject    handle to grayScaleToBin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+tobin = convert2binary(im);
+axes(handles.axes2);
+imshow(tobin);
+
+    
+    
+function [ binary ] = convert2binary(img)  
+   
+     [x, y, z]=size(img); 
+      % if Read Image is an RGB Image then convert  
+      % it to a Gray Scale Image For an RGB image  
+      % the value of z will be 3 and for a Grayscale 
+      % Image the value of z will be 1
+   if z==3 
+      img=rgb2gray(img); 
+   end 
+    img=double(img); 
+   
+    % Calculate sum of all the gray level 
+    % pixel's value of the GraySacle Image 
+    sum=0; 
+    for i=1:x 
+         for j=1:y 
+        sum=sum+img(i, j); 
+         end
+     end
+   
+    % Calculate Threshold value by dividing the  
+    % calculated sum by total number of pixels  
+    % total number of pixels = rows*columns (i.e x*y)  
+    threshold=sum/(x*y); 
+    
+    % Create a image array having same number 
+    % of rows and column as Original image 
+    % with all elements as 0 (Zero). 
+    binary=zeros(x, y); 
+   
+    % iterate over all the pixels of Grayscale  
+    % Image and Assign 1 to binary(i, j), if gray 
+    % level value is >=  threshold value      
+    % else assign 0 to binary(i, j) . 
+   
+    for i=1:x 
+     for j=1:y 
+        if img(i, j) >= threshold 
+                binary(i, j) = 1; 
+        else
+            binary(i, j)=0; 
+        end
+     end
+    end
+
+
+% --- Executes on button press in motion.
+function motion_Callback(hObject, eventdata, handles)
+% hObject    handle to motion (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+motion = im;
+H = fspecial('motion');
+moFilter = imfilter(motion,H,'replicate');
+axes(handles.axes2);
+imshow(moFilter);
+
+
+
+% --- Executes on button press in Prewitt.
+function Prewitt_Callback(hObject, eventdata, handles)
+% hObject    handle to Prewitt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+prewitt = im;
+H = fspecial('prewitt');
+prewFilter = imfilter(prewitt,H,'replicate');
+axes(handles.axes2);
+imshow(prewFilter);
+
+
+% --- Executes on button press in disk.
+function disk_Callback(hObject, eventdata, handles)
+% hObject    handle to disk (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+disk = im;
+H = fspecial('disk');
+diskFilter = imfilter(disk,H,'replicate');
+axes(handles.axes2);
+imshow(diskFilter);
+
+
+% --- Executes on button press in medianFilter.
+function medianFilter_Callback(hObject, eventdata, handles)
+% hObject    handle to medianFilter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% global im
+% medianFilter = im;
+% % H = fspecial('disk');
+%  medFilter = medfilt2(medianFiltr, [3 3]);
+%  axes(handles.axes2);
+%  imshow(medFilter);
+
+% This need to be two dimentional
+% array. As we might need some noisy image first cause the image need to be a 2D image before calling matlab medfilter. So We will built our
+% own median filter module. By looking at through each rgb values or instances
+
+% Let Do It This Way, we create our medianfilter function witch will read our image as a 2D Image and Proceed the Median Operation!
+
+global im
+mediaF = im;
+mFiltr = mymedian(mediaF);
+axes(handles.axes2);
+imshow(mFiltr);
+
+
+% --- Executes on button press in HitsogramEqua.
+function HitsogramEqua_Callback(hObject, eventdata, handles)
+% hObject    handle to HitsogramEqua (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+
+image=im;
+imager=image(:,:,1);
+imageg=image(:,:,2);
+imageb=image(:,:,3);
+
+imagerr=histog(imager);
+imagegg=histog(imageg);
+imagebb=histog(imageb);
+
+newimage(:,:,1)=imagerr;
+newimage(:,:,2)=imagegg;
+newimage(:,:,3)=imagebb;
+
+axes(handles.axes2),imshow(newimage);
+
+
+
+% --- Executes on button press in weightedAveraging.
+function weightedAveraging_Callback(hObject, eventdata, handles)
+% hObject    handle to weightedAveraging (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+
+imwtd=im;
+imr=imwtd(:,:,1);
+img=imwtd(:,:,2);
+imb=imwtd(:,:,3);
+wtavg=1/16*[1 2 1;2 4 2;1 2 1];
+filtr=myfilter(imr,wtavg);
+filtg=myfilter(img,wtavg);
+filtb=myfilter(imb,wtavg);
+filt(:,:,1)=filtr;
+filt(:,:,2)=filtg;
+filt(:,:,3)=filtb;
+
+axes(handles.axes2);
+imshow(filt);
+
+
+
+% --- Executes on button press in gaussianNoise.
+function gaussianNoise_Callback(hObject, eventdata, handles)
+% hObject    handle to gaussianNoise (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+gaussNoise=im;
+H = imnoise(gaussNoise,'gaussian');
+axes(handles.axes2);
+imshow(H);
+
+
+% --- Executes on button press in localvar.
+function localvar_Callback(hObject, eventdata, handles)
+% hObject    handle to localvar (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+localvarNoise=im;
+H = imnoise(localvarNoise,'localvar',0.01); 
+axes(handles.axes2);
+imshow(H);
+
+% --- Executes on button press in poisson.
+function poisson_Callback(hObject, eventdata, handles)
+% hObject    handle to poisson (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+poissonNoise=im;
+H = imnoise(poissonNoise,'poisson'); 
+axes(handles.axes2);
+imshow(H);
+
+
+% --- Executes on button press in saltpepper.
+function saltpepper_Callback(hObject, eventdata, handles)
+% hObject    handle to saltpepper (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+saltPepperNoise =im;
+H = imnoise(saltPepperNoise,'salt & pepper');
+axes(handles.axes2);
+imshow(H);
+
+ 
+
+% --- Executes on button press in speckle.
+function speckle_Callback(hObject, eventdata, handles)
+% hObject    handle to speckle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im;
+speckleNoise =im;
+H = imnoise(speckleNoise,'speckle');
+axes(handles.axes2);
+imshow(H);
+ 
+
+
+% --------------------------------------------------------------------
+function howToUseImageP_Callback(hObject, eventdata, handles)
+% hObject    handle to howToUseImageP (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+f = figure;
+t = uicontrol(f,'Style','text',...
+    'String','Select a data set.',...
+    'Position',[7 360 150 50], 'FontSize',16.0,'BackgroundColor','green');
+t.String = 'How To Use imageP?';
+
+% --------------------------------------------------------------------
+function aboutImageP_Callback(hObject, eventdata, handles)
+% hObject    handle to aboutImageP (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ f = figure;
+t = uicontrol(f,'Style','text',...
+    'String','Select a data set.',...
+    'Position',[7 360 150 50], 'FontSize',16.0,'BackgroundColor','green');
+t.String = 'About imageP?';
+ 
+% --------------------------------------------------------------------
+function Untitled_2_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function morphologicalOperations_Callback(hObject, eventdata, handles)
+% hObject    handle to morphologicalOperations (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Opening_Callback(hObject, eventdata, handles)
+% hObject    handle to Opening (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+se = strel('disk',5);
+morphOpening = imopen(I,se);
+subplot(2,1,2);
+imshow(morphOpening,[]);
+title(' Morphology Opening Image');
+
+
+
+% --------------------------------------------------------------------
+function Closing_Callback(hObject, eventdata, handles)
+% hObject    handle to Closing (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+se = strel('disk',10);
+morphClosing = imclose(I,se);
+subplot(2,1,2);
+imshow(morphClosing);
+title(' Morphology Closing Image');
+
+% --------------------------------------------------------------------
+function Erosion_Callback(hObject, eventdata, handles)
+% hObject    handle to Erosion (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+se = strel('line',11,90);
+morphErode = imerode(I,se);
+subplot(2,1,2);
+imshow(morphErode);
+title(' Morphology Erode Image');
+
+
+% --------------------------------------------------------------------
+function Dilation_Callback(hObject, eventdata, handles)
+% hObject    handle to Dilation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+se = strel('line',11,90);
+morphDilate = imdilate(I,se);
+subplot(2,1,2);
+imshow(morphDilate);
+title(' Morphology Dilate Image');
+
+
+
+% --------------------------------------------------------------------
+function Skeleton_Callback(hObject, eventdata, handles)
+% hObject    handle to Skeleton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function fill_Callback(hObject, eventdata, handles)
+% hObject    handle to fill (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(3,1,1);
+imshow(I);
+title('Original Gray Image.');
+
+% Convert The image to binary image.
+binaryI = imbinarize(I);
+subplot(3,1,2);
+imshow(binaryI);
+title('Original Image Converted to Binary Image');
+
+% Fill the holes in the binary image
+morphFill = imfill(binaryI,'holes');
+subplot(3,1,3);
+imshow(morphFill);
+title('Morphology Filled Image');
+
+% --------------------------------------------------------------------
+function bothat_Callback(hObject, eventdata, handles)
+% hObject    handle to bothat (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+
+se = strel('disk', 3);
+addOp = imadd(I,imtophat(I,se));
+morphBothat = imbothat(I,se);
+J = imsubtract(addOp,morphBothat);
+subplot(2,1,2);
+imshow(J);
+title(' Morphology Bothat Image');
+
+
+% --------------------------------------------------------------------
+function tophat_Callback(hObject, eventdata, handles)
+% hObject    handle to tophat (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+figure;
+subplot(2,1,1);
+imshow(I);
+title('Original Gray Image.');
+se = strel('disk',12);
+morphTophat = imtophat(I,se);
+subplot(2,1,2);
+imshow(morphTophat);
+title(' Morphology Tophat Image');
+% morphContrastAdjusted = imadjust(morphTophat);
+% subplot(2,1,3);
+% imshow(morphContrastAdjusted);
+
+
+% --- Executes on button press in close.
+function close_Callback(hObject, eventdata, handles)
+% hObject    handle to close (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+close all force ;
+
+
+% --------------------------------------------------------------------
+function RedEyesOps_Callback(hObject, eventdata, handles)
+% hObject    handle to RedEyesOps (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in canny.
+function canny_Callback(hObject, eventdata, handles)
+% hObject    handle to canny (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+threshold = 0.6;
+sigma =  sqrt(2);
+cannyEdge = edge(I,'Canny',threshold,sigma);
+axes(handles.axes2);
+imshow(cannyEdge);
+
+% --- Executes on button press in prewitt_edge.
+function prewitt_edge_Callback(hObject, eventdata, handles)
+% hObject    handle to prewitt_edge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+prewittEdge = edge(I,'prewitt');
+axes(handles.axes2);
+imshow(prewittEdge);
+
+% --- Executes on button press in sobel_edge.
+function sobel_edge_Callback(hObject, eventdata, handles)
+% hObject    handle to sobel_edge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+sobelEdge = edge(I,'Sobel');
+axes(handles.axes2);
+imshow(sobelEdge);
+
+
+% --- Executes on button press in roberts.
+function roberts_Callback(hObject, eventdata, handles)
+% hObject    handle to roberts (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+robertsEdge = edge(I,'Roberts');
+axes(handles.axes2);
+imshow(robertsEdge);
+
+
+
+% --- Executes on button press in zerocross.
+function zerocross_Callback(hObject, eventdata, handles)
+% hObject    handle to zerocross (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+sobelEdge = edge(I,'zerocross');
+axes(handles.axes2);
+imshow(sobelEdge);
+
+
+
+% --- Executes on button press in log_edge.
+function log_edge_Callback(hObject, eventdata, handles)
+% hObject    handle to log_edge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = rgb2gray(im);
+logEdge = edge(I,'log');
+axes(handles.axes2);
+imshow(logEdge);
+
+
+% --------------------------------------------------------------------
+function imageContConp_Callback(hObject, eventdata, handles)
+% hObject    handle to imageContConp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+% --------------------------------------------------------------------
+function ImageComplement_Callback(hObject, eventdata, handles)
+% hObject    handle to ImageComplement (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imageComplement = im;
+imageComplement = imcomplement(imageComplement);
+axes(handles.axes2);
+imshow(imageComplement);
+
+
+
+% --------------------------------------------------------------------
+function RedEyesReduction_Callback(hObject, eventdata, handles)
+% hObject    handle to RedEyesReduction (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+I = im;
+figure(2);
+subplot(2,1,1);
+imshow(I);
+
+for k = 100:1:255
+    red_threshold = k;
+    J = I;
+    [nRow, nCol, nColor] = size(I);
+    for i = 1:nRow
+        for j = 1:nCol
+            c = I(i, j, :);
+            red = c(1);
+            green = c(2);
+            blue = c(3);
+            
+%             Let Change the red to black
+            if red > red_threshold
+                J(i, j, 1) = 0;
+            end
+        end
+    end
+    
+  subplot(2,1,2)
+  imshow(J);
+  title(['modified image with red threshold =' , num2str(red_threshold)]);
+  pause(0.01);
+  
+end
+
+for k = 255:-1:100
+    
+    red_threshold = k;   %change the threshold for red
+    
+    J = I;  % the new image without re eyes
+    [nRow, nCol, nColor] = size(I);
+    for i = 1:nRow
+        for j = 1:nCol
+            c = I(i, j, :);
+            red = c(1);
+            green = c(2);
+            blue = c(3);
+            
+%             Let Change the red to black
+            if red > red_threshold
+                J(i, j, 1) = 0;
+            end
+        end
+    end
+    
+  subplot(2,1,2)
+  imshow(J);
+  title(['modified image with red threshold =' , num2str(red_threshold)]);
+  pause(0.01);
+  
+end
+
+
+% --------------------------------------------------------------------
+function imageAdjustment_Callback(hObject, eventdata, handles)
+% hObject    handle to imageAdjustment (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global im
+imageAdjust = im;
+imageAdjustment = imadjust(imageAdjust, [.2 .3 0; .6 .7 1],[]);
+axes(handles.axes2);
+imshow(imageAdjustment);
